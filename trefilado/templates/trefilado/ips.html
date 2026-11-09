@@ -1,0 +1,15 @@
+{% extends 'trefilado/base.html' %}
+{% block titulo %}Lista blanca de IPs{% endblock %}
+{% block contenido %}
+<h2>Lista blanca de IPs para Operadores</h2>
+<p><a class="boton" href="{% url 'ip_nueva' %}">+ Agregar IP o subred</a></p>
+<table>
+  <tr><th>IP o subred</th><th>Descripción</th><th>Acciones</th></tr>
+  {% for ip in ips %}
+  <tr><td class="mono">{{ ip.direccion }}</td><td>{{ ip.descripcion }}</td>
+    <td class="acciones"><a class="boton sec chico" href="{% url 'ip_editar' ip.pk %}">Editar</a>
+      <form method="post" action="{% url 'ip_eliminar' ip.pk %}">{% csrf_token %}<button class="chico peligro" type="submit">Eliminar</button></form></td></tr>
+  {% empty %}<tr><td colspan="3">La lista está vacía: ningún Operador podrá iniciar sesión.</td></tr>{% endfor %}
+</table>
+<p class="pie-tabla">Se aplica a los siguientes inicios de sesión de Operadores. Un Operador fuera de la lista es rechazado aunque sus credenciales sean correctas.</p>
+{% endblock %}

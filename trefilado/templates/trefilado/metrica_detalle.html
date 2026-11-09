@@ -1,0 +1,26 @@
+{% extends 'trefilado/base.html' %}
+{% block titulo %}Detalle de captura{% endblock %}
+{% block contenido %}
+<h2>Captura Trigger {{ metrica.trigger }}</h2>
+<p>Datos originales de <span class="mono">{{ metrica.archivo_origen }}</span>.</p>
+<div class="tarjeta">
+  <table>
+    <tr><th>Fecha y hora</th><td>{{ metrica.fecha_hora|date:"d-m-Y H:i:s" }}</td></tr>
+    <tr><th>Escena</th><td>{{ metrica.scene }}</td></tr>
+    <tr><th>Frames totales</th><td>{{ metrica.total_frames }}</td></tr>
+    <tr><th>Fondo medio</th><td>{{ metrica.mean_background|floatformat:2 }}</td></tr>
+    <tr><th>Primer frame de salida</th><td>{{ metrica.first_exit_frame|default_if_none:"Sin detección" }}</td></tr>
+    <tr><th>Confianza de salida</th><td>{{ metrica.exit_confidence }}</td></tr>
+    <tr><th>Centro del círculo X / Y</th><td>{% if metrica.circle_cx is not None %}{{ metrica.circle_cx|floatformat:2 }} / {{ metrica.circle_cy|floatformat:2 }}{% else %}Sin detección{% endif %}</td></tr>
+    <tr><th>Radio del círculo</th><td>{% if metrica.circle_radius is not None %}{{ metrica.circle_radius|floatformat:2 }}{% else %}Sin detección{% endif %}</td></tr>
+    <tr><th>Método del círculo</th><td>{{ metrica.circle_method|default:"Sin detección" }}</td></tr>
+    <tr><th>Frames de soporte del círculo</th><td>{{ metrica.circle_support_frames }}</td></tr>
+    <tr><th>Frame del ángulo</th><td>{{ metrica.angle_frame|default_if_none:"Sin medición" }}</td></tr>
+    <tr><th>Ángulo de salida</th><td>{% if metrica.exit_angle_deg is not None %}{{ metrica.exit_angle_deg|floatformat:2 }}°{% else %}Sin medición{% endif %}</td></tr>
+    <tr><th>Confianza del ángulo</th><td>{{ metrica.angle_confidence }}</td></tr>
+    <tr><th>Ruta original del diagnóstico</th><td class="mono">{{ metrica.diagnostic_path }}</td></tr>
+  </table>
+</div>
+<p class="pie-tabla">La ruta del diagnóstico pertenece al equipo que generó el JSON; la imagen no está incluida en los archivos recibidos.</p>
+<a class="boton sec" href="javascript:history.back()">Volver</a>
+{% endblock %}

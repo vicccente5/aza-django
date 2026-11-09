@@ -1,0 +1,21 @@
+{% extends 'trefilado/base.html' %}
+{% block titulo %}Lotes de producción{% endblock %}
+{% block contenido %}
+<h2>Gestión de lotes de producción</h2>
+<p><a class="boton" href="{% url 'lote_nuevo' %}">+ Crear lote</a></p>
+<table>
+  <tr><th>Identificador</th><th>Receta</th><th>Fecha</th><th>Turno</th><th>Estado</th><th>Acciones</th></tr>
+  {% for l in lotes %}
+  <tr>
+    <td>{{ l.identificador }}</td><td>{{ l.receta.nombre }}</td><td>{{ l.fecha|date:"d-m-Y" }}</td><td>{{ l.get_turno_display }}</td>
+    <td><span class="etiqueta-estado estado-{{ l.estado|lower }}">{{ l.get_estado_display }}</span></td>
+    <td class="acciones">
+      {% if l.estado == 'ABIERTO' %}
+        <a class="boton sec chico" href="{% url 'lote_editar' l.pk %}">Editar</a>
+        <form method="post" action="{% url 'lote_cerrar' l.pk %}">{% csrf_token %}<button class="chico" type="submit">Cerrar / finalizar</button></form>
+      {% else %}—{% endif %}
+    </td>
+  </tr>
+  {% empty %}<tr><td colspan="6">No hay lotes registrados.</td></tr>{% endfor %}
+</table>
+{% endblock %}

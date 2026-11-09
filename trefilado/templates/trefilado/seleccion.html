@@ -1,0 +1,39 @@
+{% extends 'trefilado/base.html' %}
+{% block titulo %}Receta y lote{% endblock %}
+{% block contenido %}
+<h2>Seleccionar receta y lote</h2>
+{% if receta_sel and lote_sel %}
+<div class="tarjeta">Batch en curso: receta <strong>{{ receta_sel.nombre }}</strong> · lote <strong>{{ lote_sel.identificador }}</strong>
+  · <a href="{% url 'panel' %}">Ir al panel de inspección</a></div>
+{% endif %}
+<div class="tarjeta" style="max-width:560px">
+<form method="post">{% csrf_token %}
+  <div class="campo"><label for="receta">Receta (solo vigentes)</label>
+    <select name="receta" id="receta">
+      <option value="">— Seleccione —</option>
+      {% for r in recetas %}<option value="{{ r.id }}" {% if receta_sel and receta_sel.id == r.id %}selected{% endif %}>{{ r.nombre }} · {{ r.materialidad }}</option>{% endfor %}
+    </select></div>
+  <div class="campo"><label for="lote">Lote (solo abiertos)</label>
+    <select name="lote" id="lote">
+      <option value="">— Seleccione —</option>
+      {% for l in lotes %}<option value="{{ l.id }}" data-receta="{{ l.receta_id }}" {% if lote_sel and lote_sel.id == l.id %}selected{% endif %}>{{ l.identificador }} · {{ l.receta.nombre }} · {{ l.get_turno_display }}</option>{% endfor %}
+    </select>
+    <small>Al elegir una receta solo se muestran los lotes asociados a ella.</small></div>
+  <button type="submit">Confirmar selección</button>
+</form>
+</div>
+<script>
+  (function () {
+    var rec = document.getElementById('receta'), lot = document.getElementById('lote');
+    function filtrar() {
+      Array.prototype.forEach.call(lot.options, function (o) {
+        if (!o.value) { return; }
+        o.hidden = rec.value && o.getAttribute('data-receta') !== rec.value;
+      });
+      var sel = lot.options[lot.selectedIndex];
+      if (sel && sel.hidden) { lot.value = ''; }
+    }
+    rec.addEventListener('change', filtrar); filtrar();
+  })();
+</script>
+{% endblock %}

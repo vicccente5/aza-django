@@ -1,0 +1,24 @@
+{% if ultima %}
+<div class="tarjeta">
+  <h3>Captura más reciente · Trigger {{ ultima.trigger }}</h3>
+  <p>Fecha: {{ ultima.fecha_hora|date:"d-m-Y H:i:s" }} · Escena: {{ ultima.scene }}</p>
+  <p>{% if ultima.exit_angle_deg is not None %}<strong>Ángulo de salida: {{ ultima.exit_angle_deg|floatformat:2 }}°</strong>{% else %}<strong>Sin medición de ángulo</strong>{% endif %} · Confianza: {{ ultima.angle_confidence }}</p>
+  <a href="{% url 'metrica_detalle' ultima.pk %}">Ver todos los datos de la captura</a>
+</div>
+{% else %}
+<div class="tarjeta">Aún no se han importado capturas reales.</div>
+{% endif %}
+
+<div class="tarjeta">
+  <h3>Últimas capturas</h3>
+  <table>
+    <tr><th>Fecha/hora</th><th>Trigger</th><th>Escena</th><th>Ángulo</th><th>Confianza</th><th></th></tr>
+    {% for i in recientes %}
+    <tr>
+      <td>{{ i.fecha_hora|date:"d-m-Y H:i:s" }}</td><td>{{ i.trigger }}</td><td>{{ i.scene }}</td>
+      <td>{% if i.exit_angle_deg is not None %}{{ i.exit_angle_deg|floatformat:2 }}°{% else %}Sin medición{% endif %}</td>
+      <td>{{ i.angle_confidence }}</td><td><a href="{% url 'metrica_detalle' i.pk %}">Detalle</a></td>
+    </tr>
+    {% empty %}<tr><td colspan="6">Sin capturas.</td></tr>{% endfor %}
+  </table>
+</div>

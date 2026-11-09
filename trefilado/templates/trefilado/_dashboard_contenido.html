@@ -1,0 +1,53 @@
+{% if form.non_field_errors %}<ul class="mensajes">{% for e in form.non_field_errors %}<li class="error">{{ e }}</li>{% endfor %}</ul>{% endif %}
+{% if total == 0 %}
+  <div class="tarjeta">No hay capturas para los filtros elegidos.</div>
+{% else %}
+<div class="rejilla">
+  <div class="metrica"><div class="valor">{{ total }}</div><div class="etiqueta">Capturas registradas</div></div>
+  <div class="metrica"><div class="valor">{{ con_angulo }}</div><div class="etiqueta">Con ángulo medido</div></div>
+  <div class="metrica"><div class="valor">{{ sin_angulo }}</div><div class="etiqueta">Sin medición de ángulo</div></div>
+  <div class="metrica"><div class="valor">{{ porcentaje_angulo }}%</div><div class="etiqueta">Cobertura de ángulo</div></div>
+</div>
+
+<div class="tarjeta">
+  <h3>Ángulo de salida medido</h3>
+  {% if angulos.minimo is not None %}
+    <p>Ángulo mínimo registrado: <strong>{{ angulos.minimo|floatformat:2 }}°</strong> · Máximo: <strong>{{ angulos.maximo|floatformat:2 }}°</strong></p>
+    <p class="pie-tabla">Cálculo sobre {{ con_angulo }} capturas con ángulo. Los JSON no incluyen límites de tolerancia para clasificarlas.</p>
+  {% else %}<p>No hay ángulos medidos en este conjunto.</p>{% endif %}
+</div>
+
+<div class="tarjeta">
+  <h3>Capturas por día</h3>
+  {% for dia in dias %}
+    <div>{{ dia.dia|date:"d-m-Y" }} · {{ dia.total }} capturas ({{ dia.con_angulo }} con ángulo)</div>
+    <div class="barra"><div class="turno" style="width: {{ dia.pct }}%"></div></div>
+  {% endfor %}
+</div>
+
+<div class="tarjeta">
+  <h3>Tendencia del ángulo (últimas 60 mediciones disponibles)</h3>
+  {% if svg %}
+  <svg viewBox="0 0 {{ svg.ancho }} {{ svg.alto }}" style="width:100%;max-width:700px;background:#fff;border:1px solid #c9d1d8" role="img" aria-label="Tendencia del ángulo de salida">
+    <line x1="{{ svg.x0 }}" y1="{{ svg.y_inf }}" x2="{{ svg.x1 }}" y2="{{ svg.y_inf }}" stroke="#98a5b0"/>
+    <line x1="{{ svg.x0 }}" y1="{{ svg.y_sup }}" x2="{{ svg.x0 }}" y2="{{ svg.y_inf }}" stroke="#98a5b0"/>
+    <text x="4" y="{{ svg.y_sup }}" font-size="10" fill="#5b6770">{{ svg.eje_sup }}</text>
+    <text x="4" y="{{ svg.y_inf }}" font-size="10" fill="#5b6770">{{ svg.eje_inf }}</text>
+    <polyline points="{{ svg.puntos }}" fill="none" stroke="#1f4e79" stroke-width="2"/>
+    {% for cx, cy in svg.circulos %}<circle cx="{{ cx }}" cy="{{ cy }}" r="3" fill="#1f4e79"/>{% endfor %}
+  </svg>
+  {% else %}<p>No hay ángulos medidos para graficar.</p>{% endif %}
+</div>
+
+<div class="tarjeta">
+  <h3>Calidad reportada por el análisis</h3>
+  <table><tr><th>Confianza del ángulo</th><th>Capturas</th></tr>
+    {% for item in confianzas %}<tr><td>{{ item.angle_confidence }}</td><td>{{ item.n }}</td></tr>{% endfor %}
+  </table>
+  <h3>Escena</h3>
+  <table><tr><th>Tipo</th><th>Capturas</th></tr>
+    {% for item in escenas %}<tr><td>{{ item.scene }}</td><td>{{ item.n }}</td></tr>{% endfor %}
+  </table>
+</div>
+{% endif %}
+<div class="pie-tabla">Fuente: archivos JSON de METRICAS_CONSOLIDADAS · Última actualización de la vista: {{ ahora|date:"H:i:s" }}</div>

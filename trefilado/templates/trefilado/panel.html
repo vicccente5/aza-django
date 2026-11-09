@@ -1,0 +1,9 @@
+{% extends 'trefilado/base.html' %}
+{% block titulo %}Panel de capturas reales{% endblock %}
+{% block contenido %}
+<h2>Panel de capturas reales</h2>
+<p>Lecturas originales importadas desde METRICAS_CONSOLIDADAS. Las capturas sin ángulo no se clasifican.</p>
+<div id="panel" data-url="{% url 'panel' %}" data-intervalo="{{ intervalo }}">
+  {% include 'trefilado/_panel_contenido.html' %}
+</div>
+{% endblock %}

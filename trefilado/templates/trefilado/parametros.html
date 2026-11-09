@@ -1,0 +1,17 @@
+{% extends 'trefilado/base.html' %}
+{% block titulo %}Parámetros generales{% endblock %}
+{% block contenido %}
+<h2>Parámetros generales del sistema</h2>
+<form method="post">{% csrf_token %}
+<table>
+  <tr><th>Parámetro</th><th>Descripción</th><th>Valor</th></tr>
+  {% for p in params %}
+  <tr><td class="mono">{{ p.nombre }}</td><td>{{ p.descripcion }}</td>
+    <td><input type="text" name="{{ p.nombre }}" value="{{ p.valor_form }}" style="max-width:110px">
+      {% if p.error %}<div class="error">{{ p.error }}</div>{% endif %}</td></tr>
+  {% endfor %}
+</table>
+<p><button type="submit">Guardar parámetros</button></p>
+</form>
+<p class="pie-tabla">Los cambios se aplican de inmediato y quedan auditados con valor anterior y nuevo. Si un parámetro no está configurado se usa su valor por defecto.</p>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'trefilado/base.html' %}
+{% block titulo %}Iniciar sesión{% endblock %}
+{% block publico %}
+<h2>Iniciar sesión</h2>
+<p class="gris">Sistema web de monitoreo y trazabilidad del trefilado</p>
+<form method="post">{% csrf_token %}
+  {% include 'trefilado/_form.html' %}
+  <button type="submit">Ingresar</button>
+</form>
+<p><a href="{% url 'recuperar' %}">¿Olvidaste tu contraseña?</a></p>
+<p class="pie-tabla">Si su rol es Administrador, se le pedirá además un código de verificación enviado a su correo.</p>
+{% endblock %}

@@ -1,0 +1,76 @@
+{% load static %}<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}Aceros AZA{% endblock %} · Monitoreo del Trefilado</title>
+  <link rel="icon" href="{% static 'trefilado/logo_aza.png' %}">
+  <link rel="stylesheet" href="{% static 'trefilado/app.css' %}">
+</head>
+<body>
+{% if user.is_authenticated %}
+{% with u=request.resolver_match.url_name %}
+<div class="layout">
+  <nav class="menu">
+    <div class="logo"><img src="{% static 'trefilado/logo_aza.png' %}" alt="AZA Acero Sostenible"></div>
+    <div class="sub">Monitoreo y trazabilidad del trefilado</div>
+    {% if user.rol == 'OPERADOR' %}
+      <div class="grupo">Operación</div>
+      <a href="{% url 'panel' %}" {% if u == 'panel' %}class="activo"{% endif %}>Capturas reales</a>
+      <a href="{% url 'seleccion' %}" {% if u == 'seleccion' %}class="activo"{% endif %}>Receta y lote para API</a>
+    {% elif user.rol == 'SUPERVISOR' %}
+      <div class="grupo">Supervisión</div>
+      <a href="{% url 'dashboard' %}" {% if u == 'dashboard' %}class="activo"{% endif %}>Métricas reales</a>
+      <a href="{% url 'historial' %}" {% if u == 'historial' %}class="activo"{% endif %}>Histórico de capturas</a>
+      <a href="{% url 'lotes' %}" {% if u == 'lotes' or u == 'lote_nuevo' or u == 'lote_editar' %}class="activo"{% endif %}>Lotes de producción</a>
+      <a href="{% url 'auditoria' %}" {% if u == 'auditoria' %}class="activo"{% endif %}>Registro de auditoría</a>
+    {% else %}
+      <div class="grupo">Control</div>
+      <a href="{% url 'control' %}" {% if u == 'control' %}class="activo"{% endif %}>Dashboard de control</a>
+      <a href="{% url 'dashboard' %}" {% if u == 'dashboard' %}class="activo"{% endif %}>Métricas reales</a>
+      <a href="{% url 'historial' %}" {% if u == 'historial' %}class="activo"{% endif %}>Histórico de capturas</a>
+      <a href="{% url 'auditoria' %}" {% if u == 'auditoria' %}class="activo"{% endif %}>Registro de auditoría</a>
+      <div class="grupo">Administración</div>
+      <a href="{% url 'usuarios' %}" {% if u == 'usuarios' or u == 'usuario_nuevo' or u == 'usuario_editar' %}class="activo"{% endif %}>Usuarios y roles</a>
+      <a href="{% url 'recetas' %}" {% if u == 'recetas' or u == 'receta_nueva' or u == 'receta_editar' %}class="activo"{% endif %}>Recetas</a>
+      <a href="{% url 'parametros' %}" {% if u == 'parametros' %}class="activo"{% endif %}>Parámetros generales</a>
+      <a href="{% url 'respaldos' %}" {% if u == 'respaldos' %}class="activo"{% endif %}>Respaldos</a>
+      <a href="{% url 'ips' %}" {% if u == 'ips' or u == 'ip_nueva' or u == 'ip_editar' %}class="activo"{% endif %}>Lista blanca de IPs</a>
+    {% endif %}
+    <div class="usuario">
+      {{ user.nombre_completo }}<br><span style="color:#9fb0bf">{{ user.get_rol_display }}</span><br>
+      <a href="{% url 'cambiar_clave' %}" style="padding:6px 0">Cambiar contraseña</a>
+      <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="sec chico" type="submit">Cerrar sesión</button></form>
+    </div>
+  </nav>
+  <main class="contenido">
+    {% include 'trefilado/_mensajes.html' %}
+    {% block contenido %}{% endblock %}
+  </main>
+</div>
+{% endwith %}
+{% else %}
+  <div class="acceso">
+    <aside class="acceso-panel">
+      <div class="logo logo-login"><img src="{% static 'trefilado/logo_aza.png' %}" alt="AZA Acero Sostenible"></div>
+      <h1>Monitoreo y trazabilidad del trefilado</h1>
+      <p>Resultados de inspección, alertas y lotes de producción en un solo lugar.</p>
+      <ul class="puntos">
+        <li>Resultados del proceso en tiempo real</li>
+        <li>Alertas cuando un resultado sale de tolerancia</li>
+        <li>Trazabilidad por lote y por receta</li>
+        <li>Registro de auditoría que no se puede modificar</li>
+      </ul>
+    </aside>
+    <section class="acceso-form">
+      <div class="solo">
+        {% include 'trefilado/_mensajes.html' %}
+        {% block publico %}{% endblock %}
+      </div>
+      <footer class="pie-acceso">© Aceros AZA · Acero Sostenible · Uso exclusivo de personal autorizado</footer>
+    </section>
+  </div>
+{% endif %}
+<script src="{% static 'trefilado/app.js' %}"></script>
+</body>
+</html>

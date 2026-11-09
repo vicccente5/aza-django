@@ -1,0 +1,33 @@
+{% extends 'trefilado/base.html' %}
+{% block titulo %}Respaldos{% endblock %}
+{% block contenido %}
+<h2>Respaldos de la base de datos</h2>
+{% if usa_sqlite %}
+<div class="tarjeta" style="max-width:560px"><h3>Frecuencia automática</h3>
+  <form method="post">{% csrf_token %}{% include 'trefilado/_form.html' %}<button type="submit">Guardar frecuencia</button></form>
+  <p class="pie-tabla">El respaldo automático se programa ejecutando <span class="mono">python manage.py respaldar</span> con el programador de tareas del sistema.</p>
+</div>
+<div class="tarjeta"><h3>Ejecutar respaldo</h3>
+  <form method="post" action="{% url 'respaldo_ejecutar' %}">{% csrf_token %}
+    <button type="submit">Respaldar ahora</button>
+  </form>
+</div>
+{% else %}
+<div class="tarjeta">La base PostgreSQL se respalda desde Supabase. La copia local de SQLite no sirve para esta conexión.</div>
+{% endif %}
+<div class="tarjeta"><h3>Historial de respaldos</h3>
+<table>
+  <tr><th>Fecha y hora</th><th>Resultado</th><th>Archivo / detalle</th></tr>
+  {% for r in historial %}<tr><td>{{ r.fecha_hora|date:"d-m-Y H:i:s" }}</td>
+    <td><span class="etiqueta-estado {% if r.resultado == 'EXITOSO' %}estado-aprobado{% else %}estado-rechazado{% endif %}">{{ r.get_resultado_display }}</span></td>
+    <td class="mono">{{ r.archivo }}{{ r.detalle }}</td></tr>
+  {% empty %}<tr><td colspan="3">Aún no hay respaldos.</td></tr>{% endfor %}
+</table></div>
+{% if usa_sqlite %}<div class="tarjeta"><h3>Procedimiento documentado de restauración</h3>
+<ol>
+  <li>Detener el servidor de la aplicación.</li>
+  <li>Copiar el archivo de respaldo exitoso elegido (carpeta <span class="mono">respaldos/</span>) sobre <span class="mono">db.sqlite3</span>.</li>
+  <li>Iniciar nuevamente el servidor y verificar el acceso y los últimos registros.</li>
+  <li>Registrar la restauración y notificar al Supervisor.</li>
+</ol></div>{% endif %}
+{% endblock %}

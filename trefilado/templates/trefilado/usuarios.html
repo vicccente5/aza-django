@@ -1,0 +1,22 @@
+{% extends 'trefilado/base.html' %}
+{% block titulo %}Usuarios y roles{% endblock %}
+{% block contenido %}
+<h2>Gestión de usuarios y roles</h2>
+<p><a class="boton" href="{% url 'usuario_nuevo' %}">+ Crear usuario</a></p>
+<table>
+  <tr><th>Usuario</th><th>Nombre</th><th>Correo</th><th>Rol</th><th>Estado</th><th>Acciones</th></tr>
+  {% for u in usuarios %}
+  <tr>
+    <td>{{ u.username }}</td><td>{{ u.nombre_completo }}</td><td>{{ u.email }}</td><td>{{ u.get_rol_display }}</td>
+    <td>{% if u.is_active %}Activo{% else %}Desactivado{% endif %}</td>
+    <td class="acciones">
+      <a class="boton sec chico" href="{% url 'usuario_editar' u.pk %}">Editar</a>
+      {% if u.pk != user.pk %}
+      <form method="post" action="{% url 'usuario_estado' u.pk %}">{% csrf_token %}
+        <button class="chico {% if u.is_active %}peligro{% endif %}" type="submit">{% if u.is_active %}Desactivar{% else %}Activar{% endif %}</button></form>
+      {% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

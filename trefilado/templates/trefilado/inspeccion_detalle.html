@@ -1,0 +1,37 @@
+{% extends 'trefilado/base.html' %}
+{% block titulo %}Detalle de inspección{% endblock %}
+{% block contenido %}
+<h2>Detalle de inspección N° {{ insp.pk }}</h2>
+<div class="tarjeta">
+  <table>
+    <tr><th>Lote</th><td>{{ insp.lote.identificador }}</td></tr>
+    <tr><th>Receta</th><td>{% if insp.receta %}{{ insp.receta.nombre }}{% else %}Sin receta{% endif %}</td></tr>
+    <tr><th>Ángulo medido</th><td>{{ insp.angulo|floatformat:2 }}°</td></tr>
+    <tr><th>Límites evaluados</th><td>{% if insp.limite_min is not None %}{{ insp.limite_min|floatformat:2 }}° – {{ insp.limite_max|floatformat:2 }}°{% else %}—{% endif %}</td></tr>
+    <tr><th>Estado</th><td><span class="etiqueta-estado estado-{{ insp.estado|lower }}">{{ insp.get_estado_display }}</span></td></tr>
+    <tr><th>Fecha/hora del dato</th><td>{{ insp.fecha_hora_dato|date:"d-m-Y H:i:s" }}</td></tr>
+    <tr><th>Fecha/hora de recepción</th><td>{{ insp.fecha_hora_recepcion|date:"d-m-Y H:i:s" }}</td></tr>
+  </table>
+</div>
+{% if alertas %}
+<div class="tarjeta"><h3>Alertas asociadas</h3>
+  <table><tr><th>Generada</th><th>Estado</th><th>Revisada por</th><th>Observación</th></tr>
+  {% for a in alertas %}<tr><td>{{ a.fecha|date:"d-m-Y H:i:s" }}</td>
+    <td>{% if a.revisada %}Revisada {{ a.fecha_revision|date:"d-m-Y H:i" }}{% else %}Pendiente{% endif %}</td>
+    <td>{{ a.revisada_por.nombre_completo|default:"—" }}</td><td>{{ a.observacion|default:"—" }}</td></tr>{% endfor %}
+  </table></div>
+{% endif %}
+<div class="tarjeta">
+  <h3>Evidencia visual</h3>
+  {% if insp.imagen %}<p><img src="{% url 'evidencia' insp.pk %}" alt="Evidencia de la inspección" style="max-width:100%;max-height:360px;border:1px solid #c9d1d8"></p>{% endif %}
+  {% if insp.imagen_referencia %}<p>Referencia visual: <span class="mono">{{ insp.imagen_referencia }}</span></p>{% endif %}
+  {% if not insp.tiene_evidencia %}<p>Esta inspección no tiene evidencia asociada.</p>{% endif %}
+  {% if user.rol == 'OPERADOR' %}
+  <form method="post" enctype="multipart/form-data">{% csrf_token %}
+    {% include 'trefilado/_form.html' %}
+    <button type="submit">Asociar evidencia</button>
+  </form>
+  {% endif %}
+</div>
+<a class="boton sec" href="javascript:history.back()">Volver</a>
+{% endblock %}

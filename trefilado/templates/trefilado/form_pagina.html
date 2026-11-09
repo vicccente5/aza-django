@@ -1,0 +1,19 @@
+{% extends 'trefilado/base.html' %}
+{% block titulo %}{{ titulo }}{% endblock %}
+{% block contenido %}
+<h2>{{ titulo }}</h2>
+<div class="tarjeta" style="max-width:560px">
+<form method="post">{% csrf_token %}
+  {% include 'trefilado/_form.html' %}
+  <button type="submit">{{ boton|default:"Guardar" }}</button>
+  {% if volver %}<a class="boton sec" href="{% url volver %}">Cancelar</a>{% endif %}
+</form>
+</div>
+{% endblock %}
+{% block publico %}
+<h2>{{ titulo }}</h2>
+<form method="post">{% csrf_token %}
+  {% include 'trefilado/_form.html' %}
+  <button type="submit">{{ boton|default:"Guardar" }}</button>
+</form>
+{% endblock %}

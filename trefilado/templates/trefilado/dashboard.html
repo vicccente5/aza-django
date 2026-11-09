@@ -1,0 +1,12 @@
+{% extends 'trefilado/base.html' %}
+{% block titulo %}Métricas reales de captura{% endblock %}
+{% block contenido %}
+<h2>Métricas reales de captura</h2>
+<p>Resultados originales de los archivos consolidados. Una captura sin ángulo se muestra como tal, sin clasificarla como aprobada o rechazada.</p>
+<form method="get" class="filtros">
+  {% for field in form %}<div class="campo"><label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}</div>{% endfor %}
+  <button type="submit">Consultar</button>
+  <a class="boton sec" href="{% url 'dashboard' %}">Limpiar</a>
+</form>
+{% include 'trefilado/_dashboard_contenido.html' %}
+{% endblock %}

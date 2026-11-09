@@ -1,0 +1,24 @@
+{% extends 'trefilado/base.html' %}
+{% block titulo %}Registro de auditoría{% endblock %}
+{% block contenido %}
+<h2>Registro de auditoría</h2>
+<form method="get" class="filtros">
+  {% for field in form %}<div class="campo"><label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}</div>{% endfor %}
+  <button type="submit">Filtrar</button>
+  <a class="boton sec" href="{% url 'auditoria' %}">Limpiar</a>
+</form>
+{% for e in form.non_field_errors %}<ul class="mensajes"><li class="error">{{ e }}</li></ul>{% endfor %}
+<table>
+  <tr><th>Fecha y hora</th><th>Usuario</th><th>Acción</th><th>Detalle</th><th>Valor anterior</th><th>Valor nuevo</th></tr>
+  {% for a in pagina %}
+  <tr><td>{{ a.fecha_hora|date:"d-m-Y H:i:s" }}</td><td>{{ a.usuario.username|default:"(anónimo)" }}</td><td>{{ a.accion }}</td>
+    <td>{{ a.detalle }}</td><td>{{ a.valor_anterior }}</td><td>{{ a.valor_nuevo }}</td></tr>
+  {% empty %}<tr><td colspan="6">Ninguna entrada coincide con los filtros.</td></tr>{% endfor %}
+</table>
+<div class="paginacion">
+  {% if pagina.has_previous %}<a href="?{{ querystring }}&page={{ pagina.previous_page_number }}">« Anterior</a>{% endif %}
+  Página {{ pagina.number }} de {{ pagina.paginator.num_pages }}
+  {% if pagina.has_next %}<a href="?{{ querystring }}&page={{ pagina.next_page_number }}">Siguiente »</a>{% endif %}
+</div>
+<p class="pie-tabla">Las entradas de auditoría son de solo lectura: la interfaz no ofrece editarlas ni eliminarlas.</p>
+{% endblock %}

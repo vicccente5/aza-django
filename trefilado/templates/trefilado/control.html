@@ -1,0 +1,9 @@
+{% extends 'trefilado/base.html' %}
+{% block titulo %}Dashboard de control{% endblock %}
+{% block contenido %}
+<h2>Dashboard de control centralizado</h2>
+<div id="ctrl" data-url="{% url 'control' %}" data-intervalo="5">
+  {% include 'trefilado/_control_contenido.html' %}
+</div>
+<p class="pie-tabla">Se actualiza automáticamente cada 5 segundos.</p>
+{% endblock %}

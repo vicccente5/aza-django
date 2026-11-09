@@ -1,0 +1,19 @@
+<div class="rejilla">
+  <div class="metrica"><div class="valor">{{ conectados }}</div><div class="etiqueta">Usuarios conectados</div></div>
+  <div class="metrica"><div class="valor">{{ total_capturas }}</div><div class="etiqueta">Capturas reales importadas</div></div>
+  <div class="metrica"><div class="valor">{{ capturas_con_angulo }}</div><div class="etiqueta">Con ángulo medido</div></div>
+  <div class="metrica"><div class="valor">{{ capturas_sin_angulo }}</div><div class="etiqueta">Sin medición de ángulo</div></div>
+</div>
+<div class="tarjeta"><h3>Origen de los datos</h3>
+  <p>Archivos JSON de METRICAS_CONSOLIDADAS. Última captura registrada: {% if ultima_captura %}{{ ultima_captura.fecha_hora|date:"d-m-Y H:i:s" }} (Trigger {{ ultima_captura.trigger }}){% else %}ninguna{% endif %}.</p>
+</div>
+<div class="tarjeta"><h3>Alertas de seguridad recientes</h3>
+<table>
+  <tr><th>Fecha y hora</th><th>Tipo</th><th>Detalle</th><th></th></tr>
+  {% for a in alertas %}
+  <tr><td>{{ a.fecha|date:"d-m-Y H:i:s" }}</td><td>{{ a.tipo }}</td><td>{{ a.detalle }}</td>
+    <td>{% if a.bloqueo %}<form method="post" action="{% url 'bloqueo_levantar' a.bloqueo.pk %}">{% csrf_token %}<button class="chico sec" type="submit">Levantar bloqueo</button></form>{% endif %}</td></tr>
+  {% empty %}<tr><td colspan="4">Sin alertas de seguridad recientes.</td></tr>{% endfor %}
+</table>
+<div class="pie-tabla">Los bloqueos de seguridad corresponden a la API y al inicio de sesión.</div>
+</div>
