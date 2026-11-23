@@ -128,3 +128,12 @@ se muestra en pantalla; para un despliegue real se necesita configurar un servic
 de correo. La API de captura queda deshabilitada hasta configurar
 `API_TOKEN_CAPTURA`. El proyecto Supabase contiene tablas previas en `public` sin
 RLS; deben revisarse por separado antes de utilizar su Data API.
+
+
+
+la base se conecta asi se tiene que ver
+
+"
+DATABASE_URL=postgresql://postgres.hxgewarawsnhttcxpnhw:aza_project%40123@aws-1-us-east-2.pooler.supabase.com:5432/postgres
+DB_SCHEMA=aza
+"
